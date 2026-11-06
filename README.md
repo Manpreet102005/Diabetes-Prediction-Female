@@ -4,50 +4,43 @@ A Flask web application that uses a trained machine learning model to predict di
 
 ## Overview
 
-The application evaluates information including:
+The project uses the Pima Indians Diabetes dataset, containing 768 records, to train and evaluate classification models. The web app accepts health information including age, number of pregnancies, glucose level, blood pressure, insulin level, weight, height, and family diabetes history.
 
-- Age
-- Number of pregnancies
-- Glucose level
-- Blood pressure
-- Insulin level
-- Weight and height, used to calculate BMI
-- Diabetes history among first- and second-degree relatives
+## Model Development
 
-## Features
+The `Diabetes.ipynb` notebook explores the data, prepares model inputs, compares classifiers, and selects a stacking classifier.
 
-- Web form for entering health information
-- Flask backend for processing inputs and returning a prediction
-- Saved model, transformer, and scaler artifacts
-- HTML and CSS frontend
+### Data preparation
+
+- The data is divided into training, validation, and test sets (60%, 20%, and 20%, respectively).
+- Zero values in Glucose, BloodPressure, SkinThickness, and Insulin are treated as missing values.
+- Missing values in those features are imputed with their median. The imputer is fitted on the training set and applied to the validation and test sets.
+- A `MinMaxScaler` is fitted on the training features and applied to the training, validation, and test sets.
+
+### Model selection
+
+The notebook compares several classifiers and uses `GridSearchCV` with stratified 10-fold cross-validation to tune model parameters. The selected model is a `StackingClassifier` with Random Forest, XGBoost, and Ridge base estimators and an SGD classifier as the final estimator. The notebook reports a validation accuracy of about 79.2% for this model.
+
+## How the Web App Works
+
+1. The user enters health information in the web form.
+2. The application calculates BMI from weight and height and derives a diabetes pedigree value from the family-history inputs.
+3. The application applies its saved transformer and scaler to the input features.
+4. The saved model produces a prediction probability, which the web form maps to “Diabetic” or “Non Diabetic” using a threshold.
 
 ## Tech Stack
 
 - Python
 - Flask
-- Pandas
-- NumPy
+- Pandas and NumPy
 - scikit-learn
 - XGBoost
 - Joblib
 - HTML and CSS
 
-## How It Works
-
-1. The user enters health information in the web form.
-2. The application calculates BMI and derives a diabetes pedigree value from the family-history inputs.
-3. The application transforms and scales the model inputs using saved artifacts.
-4. The trained model produces a prediction probability.
-5. The web application displays "Diabetic" or "Non Diabetic" based on a probability threshold.
-
 ## Live Demo
 
-Visit the app here:
-https://diabetes-prediction-female.onrender.com/
-
-## Model Notes
-
-The repository contains a trained model and saved preprocessing artifacts used by the application. The input-processing code applies the saved transformer and scaler before passing data to the model.
+[Open the web app](https://diabetes-prediction-female.onrender.com/)
 
 ## Author
 
